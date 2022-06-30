@@ -62,6 +62,9 @@ ${MAGENTA}
 	git clone https://github.com/GoogleCloudPlatform/training-data-analyst"
 
 gcloud compute ssh --project $PROJECT_ID --quiet  --zone us-central1-a   instance-without-gpu -- -L 8080:localhost:8080
+sleep 2
+
+gcloud compute ssh --project $PROJECT_ID --quiet  --zone us-central1-a   instance-without-gpu -- -L 8080:localhost:8080
 
 completed "Task 1"
 
