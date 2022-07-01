@@ -35,34 +35,37 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --role="roles/aiplatform.user"
 
 gcloud services enable notebooks.googleapis.com
-gcloud compute images describe-from-family tf2-ent-2-3-cpu --project deeplearning-platform-release
+#gcloud compute images describe-from-family tf2-ent-2-3-cpu --project deeplearning-platform-release
 
 gcloud notebooks instances create instance-without-gpu \
   --vm-image-project=deeplearning-platform-release \
   --vm-image-family=tf2-ent-2-3-cpu \
   --machine-type=n1-standard-4 \
   --location=us-central1-a
+  
 gcloud notebooks instances list --location=us-central1-a
 
+warning "https://console.cloud.google.com/vertex-ai/workbench/list/instances?project=$PROJECT_ID"
 STATE=$(gcloud notebooks instances list --location=us-central1-a --format='value(STATE)')
 echo $STATE
-sleep 10
 while [ $STATE = PROVISIONING ]; 
 do echo "PROVISIONING" && sleep 2 && STATE=$(gcloud notebooks instances list --location=us-central1-a --format='value(STATE)') ; 
 done
 
 if [ $STATE = 'ACTIVE' ]
 then
-echo "${GREEN}$STATE" 
-warning "preview on port 80 to open jupyterlab" 
+echo "${BOLD}${GREEN}$STATE ${RESET}"
 fi
+
+JUPYTERLAB_URL=`gcloud notebooks instances describe instance-without-gpu --location=us-central1-a --format='value(proxyUri)'`
+warning "Visit ${CYAN}https://$JUPYTERLAB_URL ${YELLOW}to open Jupyterlab"
+
 
 warning "Run below command in Jupyterlab Terminal:
 ${MAGENTA}
 	git clone https://github.com/GoogleCloudPlatform/training-data-analyst"
 
-gcloud compute ssh --project $PROJECT_ID --quiet  --zone us-central1-a   instance-without-gpu -- -L 8080:localhost:8080
-
+sleep 30
 completed "Task 1"
 
 completed "Lab"

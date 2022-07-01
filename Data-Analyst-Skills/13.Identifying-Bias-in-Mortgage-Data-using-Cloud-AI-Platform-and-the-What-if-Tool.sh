@@ -19,9 +19,9 @@ gcloud notebooks instances create tensorflow-2-6 \
   --location=us-central1-a
 gcloud notebooks instances list --location=us-central1-a
 
+warning "https://console.cloud.google.com/vertex-ai/workbench/list/instances?project=$PROJECT_ID"
 STATE=$(gcloud notebooks instances list --location=us-central1-a --format='value(STATE)')
 echo $STATE
-sleep 10
 while [ $STATE = PROVISIONING ]; 
 do echo "PROVISIONING" && sleep 2 && STATE=$(gcloud notebooks instances list --location=us-central1-a --format='value(STATE)') ; 
 done
@@ -29,13 +29,12 @@ done
 if [ $STATE = 'ACTIVE' ]
 then
 echo "${BOLD}${GREEN}$STATE${RESET}" 
-warning "preview on port 80 to open jupyterlab" 
 fi
 
-PROJECT=0
-BUCKET=0
 completed "Task 2"
-echo "${BOLD}${YELLOW}Run below command in Jupyterlab Terminal:${MAGENTA}"
+
+JUPYTERLAB_URL=`gcloud notebooks instances describe tensorflow-2-6 --location=us-central1-a --format='value(proxyUri)'`
+warning "Visit ${CYAN}https://$JUPYTERLAB_URL ${YELLOW}to open Jupyterlab"
 
 echo '
 git clone https://github.com/GoogleCloudPlatform/training-data-analyst
@@ -46,18 +45,31 @@ echo $PROJECT
 echo $BUCKET
 sed -i s/YOUR_GCP_PROJECT/$PROJECT/g xgboost_caip_e2e.ipynb
 sed -i s/your_storage_bucket/$PROJECT/g xgboost_caip_e2e.ipynb
-sed -i "s/your_model_name/newModel/g" xgboost_caip_e2e.ipynb'
+sed -i "s/your_model_name/newModel/g" xgboost_caip_e2e.ipynb' > jupyter.sh
+gsutil cp jupyter.sh gs://$PROJECT_ID/jupyter.sh
+
+JUPYTERLAB_URL=`gcloud notebooks instances describe tensorflow-2-6 --location=us-central1-a --format='value(proxyUri)'`
+warning "Visit ${CYAN}https://$JUPYTERLAB_URL ${YELLOW}to open Jupyterlab"
+
+echo "${BOLD}${YELLOW}
+Run below command in Jupyterlab Terminal:${MAGENTA}"
+
+cat jupyter.sh
+
+warning "			OR	
+	${MAGENTA}				
+	gsutil cp gs://$PROJECT_ID/jupyter.sh .
+	source jupyter.sh"
 
 echo "${RESET}${YELLOW}
-	NAvigate to - training-data-analyst/quests/dei
+	NAvigate to -${CYAN} training-data-analyst/quests/dei ${YELLOW}
 
 	Copy PROJECT_ID = ${CYAN}$PROJECT_ID${YELLOW} & 
 	Bucket = ${CYAN}`gsutil ls`${YELLOW}
-	and paste in the xgboost_caip_e2e.ipynb file 
+	and paste in the ${CYAN}xgboost_caip_e2e.ipynb ${YELLOW}file 
 	and run all command"
 
-gcloud compute ssh --project $PROJECT_ID --quiet  --zone us-central1-a   tensorflow-2-6 -- -L 8080:localhost:8080
-
+sleep 100
 completed "Task 4"
 
 completed "Lab"

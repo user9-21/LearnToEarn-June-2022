@@ -18,9 +18,10 @@ gcloud notebooks instances create tensorflow-2-6 \
   --location=us-central1-a
 gcloud notebooks instances list --location=us-central1-a
 
+warning "https://console.cloud.google.com/vertex-ai/workbench/list/instances?project=$PROJECT_ID"
 STATE=$(gcloud notebooks instances list --location=us-central1-a --format='value(STATE)')
 echo $STATE
-sleep 10
+
 while [ $STATE = PROVISIONING ]; 
 do echo "PROVISIONING" && sleep 2 && STATE=$(gcloud notebooks instances list --location=us-central1-a --format='value(STATE)') ; 
 done
@@ -28,10 +29,9 @@ done
 if [ $STATE = 'ACTIVE' ]
 then
 echo "${BOLD}${GREEN}$STATE${RESET}" 
-warning "preview on port 80 to open jupyterlab" 
 fi
-
 completed "Task 1"
+
 echo '
 sudo apt-get install -y ffmpeg
 gsutil cp gs://spls/aiforsports/Sports_AI_Analysis.ipynb .
@@ -40,24 +40,25 @@ echo $PROJECT
 sed -i s/YOUR_PROJECT_ID/$PROJECT/g Sports_AI_Analysis.ipynb' > jupyter.sh
 gsutil cp jupyter.sh gs://$PROJECT_ID/jupyter.sh
 
+JUPYTERLAB_URL=`gcloud notebooks instances describe tensorflow-2-6 --location=us-central1-a --format='value(proxyUri)'`
+warning "Visit ${CYAN}https://$JUPYTERLAB_URL ${YELLOW}to open Jupyterlab"
+
 echo "${BOLD}${YELLOW}
 Run below command in Jupyterlab Terminal:${MAGENTA}"
 
 cat jupyter.sh
 
-warning "
-				OR	
-					
+warning "			OR	
+	${MAGENTA}				
 	gsutil cp gs://$PROJECT_ID/jupyter.sh .
 	source jupyter.sh"
 echo "${RESET}${YELLOW}
-	NAvigate to - Sports_AI_Analysis.ipynb
+	Open - Sports_AI_Analysis.ipynb
 
 	Replace YOUR_PROJECT_ID = ${CYAN}$PROJECT_ID${YELLOW} 
 	in the Sports_AI_Analysis.ipynb.ipynb file 
 	and run all command"
-	
-gcloud compute ssh --project $PROJECT_ID --quiet  --zone us-central1-a   tensorflow-2-6 -- -L 8080:localhost:8080
+sleep 60
 
 completed "Lab"
 
