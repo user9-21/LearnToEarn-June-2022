@@ -60,14 +60,13 @@ fi
 JUPYTERLAB_URL=`gcloud notebooks instances describe instance-without-gpu --location=us-central1-a --format='value(proxyUri)'`
 warning "Visit ${CYAN}https://$JUPYTERLAB_URL ${YELLOW}to open Jupyterlab"
 
-
 warning "Run below command in Jupyterlab Terminal:
 ${MAGENTA}
 	git clone https://github.com/GoogleCloudPlatform/training-data-analyst"
 
-sleep 30
+
 completed "Task 1"
 
 completed "Lab"
 
-remove_files 
+remove_files
