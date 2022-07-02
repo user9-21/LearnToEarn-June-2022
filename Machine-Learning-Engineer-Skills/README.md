@@ -56,7 +56,4 @@ source script.sh
 
 ```
 
-
-------------------[:fa-arrow-left:]()
-
-### [:arrow_lower_left:](/README.md)
+## [:back:](/README.md)
