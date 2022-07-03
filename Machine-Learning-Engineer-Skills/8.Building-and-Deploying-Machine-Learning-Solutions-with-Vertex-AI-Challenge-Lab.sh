@@ -48,7 +48,7 @@ PROJECT=$(gcloud config get-value core/project)
 echo $PROJECT
 sed -i s/YOUR_GCP_PROJECT/$PROJECT/g Vertex-AI-Challenge-Lab.ipynb
 
-JUPYTERLAB_URL=`gcloud notebooks instances describe vertex-ai-challenge --location=us-central1-a --format='value(proxyUri)'`
+JUPYTERLAB_URL=`gcloud notebooks instances describe vertex-ai-challenge --location=us-central1-a --format="value(proxyUri)"`
 warning "${MAGENTA}Visit ${CYAN}https://$JUPYTERLAB_URL/lab/tree/training-data-analyst/quests/vertex-ai/vertex-challenge-lab/Vertex-AI-Challenge-Lab.ipynb ${MAGENTA}to open Vertex-AI-Challenge-Lab.ipynb file"
 echo "${YELLOW}	
 Open ${CYAN}Vertex-AI-Challenge-Lab.ipynb ${YELLOW}file and run all command"
