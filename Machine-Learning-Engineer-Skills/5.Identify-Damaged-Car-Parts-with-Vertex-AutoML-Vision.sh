@@ -48,8 +48,7 @@ cat > request.json <<EOF
 EOF
 
 
-warning "
-	Visit - ${CYAN}https://console.cloud.google.com/vertex-ai/?project=$PROJECT_ID
+warning "Visit - ${CYAN}https://console.cloud.google.com/vertex-ai/?project=$PROJECT_ID ${YELLOW}
 	and Do manually as instructed on lab page"
 
 sleep 200
